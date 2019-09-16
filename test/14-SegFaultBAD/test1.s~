@@ -1,0 +1,10 @@
+.global _start
+
+.section readOnly, r
+
+const:
+.word 0xABCD
+
+.text
+
+_start

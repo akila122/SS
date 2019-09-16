@@ -1,0 +1,9 @@
+.global _start
+
+.equ ZERO,0
+
+.text
+
+_start:
+
+div r0,&ZERO

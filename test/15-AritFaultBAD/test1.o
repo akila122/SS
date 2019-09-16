@@ -1,0 +1,29 @@
+<<<<SYMBOL TABLE [3]>>>>
+
+SECTION			NAME			DEFINED			SCOPE			VALUE			SIZE			ALIGN			
+.text			.text			1			LOCAL			0			5			0
+ABS			ZERO			1			LOCAL			0			2			0
+.text			_start			1			GLOBAL			0			0			0
+
+#END#
+
+<<<<TNS TABLE [0]>>>>
+
+SYMBOL			SCOPE			EXPRESSION			
+
+#END#
+
+<<<<RELOCATION TABLE [0]>>>>
+
+SECTION			OFFSET			LENGTH			SIZE			TYPE			EXPRESSION			
+
+#END#
+
+<<<<SECTIONS [1]>>>>
+
+<<<<SECTION - .text>>>>
+[Size = 5bytes | Flags = x | MaxAlign = 0]
+
+44 20 00 00 00 
+
+#END#

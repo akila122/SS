@@ -1,0 +1,49 @@
+<<<<SYMBOL TABLE [10]>>>>
+
+SECTION			NAME			DEFINED			SCOPE			VALUE			SIZE			ALIGN			
+.IVT			.IVT			1			LOCAL			0			100			0
+.IVT			_IVT0			1			GLOBAL			0			0			0
+.IVT			_IVT1			1			GLOBAL			9			0			0
+.IVT			_IVT2			1			GLOBAL			58			0			0
+.IVT			_IVT3			1			GLOBAL			95			0			0
+.IVT			_IVT4			1			GLOBAL			96			0			0
+.IVT			_IVT5			1			GLOBAL			97			0			0
+.IVT			_IVT6			1			GLOBAL			98			0			0
+.IVT			_IVT7			1			GLOBAL			99			0			0
+UND			_start			0			GLOBAL			0			0			0
+
+#END#
+
+<<<<TNS TABLE [0]>>>>
+
+SYMBOL			SCOPE			EXPRESSION			
+
+#END#
+
+<<<<RELOCATION TABLE [1]>>>>
+
+SECTION			OFFSET			LENGTH			SIZE			TYPE			EXPRESSION			
+.IVT			2			1			WORD			REL_ABS			_start
+
+#END#
+
+<<<<SECTIONS [1]>>>>
+
+<<<<SECTION - .IVT>>>>
+[Size = 100bytes | Flags = rwx | MaxAlign = 0]
+
+8C 00 00 00 8C 00 00 00 
+CC 20 A0 00 FF 00 23 20 
+A0 00 FF 00 45 20 A0 00 
+FF 00 52 20 A0 00 FF 00 
+52 20 A0 00 FF 00 4F 20 
+A0 00 FF 00 52 20 A0 00 
+FF 00 23 20 A0 00 FF 00 
+0A 0C 20 A0 00 FF 00 74 
+20 A0 00 FF 00 69 20 A0 
+00 FF 00 63 20 A0 00 FF 
+00 6B 20 A0 00 FF 00 21 
+20 A0 00 FF 00 0A CC CC 
+CC CC CC CC 
+
+#END#

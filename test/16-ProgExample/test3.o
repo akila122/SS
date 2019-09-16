@@ -1,0 +1,43 @@
+<<<<SYMBOL TABLE [5]>>>>
+
+SECTION			NAME			DEFINED			SCOPE			VALUE			SIZE			ALIGN			
+.text			.text			1			LOCAL			0			68			0
+.text			end2			1			LOCAL			67			0			0
+.text			invert			1			GLOBAL			0			0			0
+.text			while1			1			LOCAL			13			0			0
+.text			while2			1			LOCAL			41			0			0
+
+#END#
+
+<<<<TNS TABLE [0]>>>>
+
+SYMBOL			SCOPE			EXPRESSION			
+
+#END#
+
+<<<<RELOCATION TABLE [4]>>>>
+
+SECTION			OFFSET			LENGTH			SIZE			TYPE			EXPRESSION			
+.text			23			1			WORD			REL_ABS			while2
+.text			39			1			WORD			REL_ABS			while1
+.text			48			1			WORD			REL_ABS			end2
+.text			65			1			WORD			REL_ABS			while2
+
+#END#
+
+<<<<SECTIONS [1]>>>>
+
+<<<<SECTION - .text>>>>
+[Size = 68bytes | Flags = x | MaxAlign = 0]
+
+24 20 6C FC 24 24 6C FC 
+24 26 00 00 00 20 22 60 
+00 48 22 00 00 A4 A0 00 
+00 88 22 2C 20 00 01 00 
+2C 26 00 01 00 9C A0 00 
+00 4C 26 00 00 00 A4 A0 
+00 00 90 64 00 34 26 00 
+01 00 2C 24 00 01 00 9C 
+A0 00 00 C4 
+
+#END#

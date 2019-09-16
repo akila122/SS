@@ -1,0 +1,9 @@
+.global errSym
+
+.equ errSym,0xAAAA
+
+.text
+
+_start:
+
+halt

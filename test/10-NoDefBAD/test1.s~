@@ -1,0 +1,2 @@
+.extern b
+.equ a,b

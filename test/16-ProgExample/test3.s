@@ -1,0 +1,33 @@
+.global invert
+
+
+.text
+invert:
+
+
+mov r0,sp[-4]
+mov r2,sp[-4]
+mov r3,0
+
+while1:
+
+movb r1l,r0[0]
+cmpb r1l,0
+jeq while2
+pushb r1l
+add r0,1
+add r3,1
+jmp while1
+
+while2:
+
+cmp r3,0
+jeq end2
+popb r2[0]
+sub r3,1
+add r2,1
+jmp while2
+
+end2:
+
+ret

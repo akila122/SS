@@ -1,0 +1,5 @@
+#!/bin/bash
+cp IVTSetup.s /usr/bin
+assembler test1.s -o test1.o
+emulator test1.o
+cp ../../bin/IVTSetup.s /usr/bin

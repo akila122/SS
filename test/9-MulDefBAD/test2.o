@@ -1,0 +1,29 @@
+<<<<SYMBOL TABLE [3]>>>>
+
+SECTION			NAME			DEFINED			SCOPE			VALUE			SIZE			ALIGN			
+.text			.text			1			LOCAL			0			1			0
+.text			_start			1			GLOBAL			0			0			0
+ABS			errSym			1			GLOBAL			43690			2			0
+
+#END#
+
+<<<<TNS TABLE [0]>>>>
+
+SYMBOL			SCOPE			EXPRESSION			
+
+#END#
+
+<<<<RELOCATION TABLE [0]>>>>
+
+SECTION			OFFSET			LENGTH			SIZE			TYPE			EXPRESSION			
+
+#END#
+
+<<<<SECTIONS [1]>>>>
+
+<<<<SECTION - .text>>>>
+[Size = 1bytes | Flags = x | MaxAlign = 0]
+
+0C 
+
+#END#
