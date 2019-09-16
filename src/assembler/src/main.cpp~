@@ -1,0 +1,69 @@
+
+//======================================================================
+//======================================================================
+//****             Course:  IR3SS                                   ****
+//****             File:    main.cpp                                ****
+//****             Info:    Assembler main Source                   ****
+//****                                                              ****
+//****             Student: Aleksa Rajkovic 248|2016      	    ****
+//****             Date:    June 2019.                              ****
+//======================================================================
+//======================================================================
+
+#include <string>
+#include <iostream>
+#include "Assembler.h"
+
+using namespace std;
+
+//Assembler
+
+int main(int argc,char** argv){
+    
+    if(argc != 4){
+        cout<<"Invalid command the format should be assembler -o outputfile inputfile"<<endl;
+        return -1;
+    }
+    
+    string inFile,outFile;
+    
+    int pos = -1;
+    
+    for(int i = 1; i<4; i++)
+        if(!strcmp(argv[i],"-o"))
+            pos = i;
+        
+    if(pos==-1){
+        cout <<"Invalid command -o was not found"<<endl;
+        return -1;
+    }
+    
+    if(pos==3){
+        cout <<"Invalid command file names are ambiguous"<<endl;
+        return -1;
+    }
+        
+    if (pos==1){
+        outFile = argv[2];
+        inFile = argv[3];
+    } else {
+        outFile = argv[3];
+        inFile = argv[1];
+    }
+    
+    try{
+    
+        Assembler(inFile,outFile);
+    }
+    catch(string s){
+        cout<<s;
+        return -1;
+    }
+    catch(char *const s){
+        cout<<s<<endl;
+        return -1;
+    }
+    
+    return 0;
+    
+}

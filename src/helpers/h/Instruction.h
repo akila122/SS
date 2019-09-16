@@ -1,0 +1,158 @@
+
+//======================================================================
+//======================================================================
+//****             Course:  IR3SS                                   ****
+//****             File:    Instruction.h                           ****
+//****             Info:    Instruction class Header                ****
+//****                                                              ****
+//****             Student: Aleksa Rajkovic 248|2016      	    ****
+//****             Date:    June 2019.                              ****
+//======================================================================
+//======================================================================
+
+#ifndef INSTRUCTION_H
+#define INSTRUCTION_H
+
+#include <stdint.h>
+#include <regex>
+#include <string>
+#include <map>
+#include <exception>
+#include <climits>
+#include <vector>
+#include "Utils.h"
+
+using namespace std;
+
+class Instruction {
+public:
+
+    Instruction(string toParse);
+    virtual ~Instruction();
+    friend ostream & operator<<(ostream &cout, const Instruction &i) {
+        cout << "INSTRUCTION: " << i.inputLine << endl;
+        cout << "instrType - " << i.instrType << endl;
+        cout << "opSz - " << i.opSz << endl;
+        cout << "op1 : " << i.op1 << endl;
+        cout << "  Val - " << i.op1Val << endl;
+        cout << "  Sym - " << i.op1Sym << endl;
+        cout << "  Num - " << i.op1Num << endl;
+        cout << "  HL  - " << i.op1HL << endl;
+        cout << "  isHex - " << i.op1IsImmHex << endl;
+        cout << "op1SynType - " << i.op1SynType << endl;
+        cout << "op2 : " << i.op2 << endl;
+        cout << "  Val - " << i.op2Val << endl;
+        cout << "  Sym - " << i.op2Sym << endl;
+        cout << "  Num - " << i.op2Num << endl;
+        cout << "  HL  - " << i.op2HL << endl;
+        cout << "  isHex - " << i.op2IsImmHex << endl;
+        cout << "op2SynType - " << i.op2SynType << endl;
+        cout << "ENCODED: " << hex << (int) i.instrDescr << "|" << (int) i.op1Descr
+                << "|" << (int) i.op1B1 << "|" << (int) i.op1B2 << "|" << (int) i.op2Descr << "|"
+                << (int) i.op2B1 << "|" << (int) i.op2B2 << " SZ(" << i.instrSz << ")";
+        return cout;
+
+
+
+    }
+
+    static bool isOverflow(uint64_t);
+    static uint64_t _parseVal(string);
+
+private:
+    
+    int getOffOpr2();
+    int numOfOprs();
+    static void initMaps();
+    static void _halt(Instruction*);
+    static void _xchg(Instruction*);
+    static void _int(Instruction*);
+    static void _mov(Instruction*);
+    static void _add(Instruction*);
+    static void _sub(Instruction*);
+    static void _mul(Instruction*);
+    static void _div(Instruction*);
+    static void _cmp(Instruction*);
+    static void _not(Instruction*);
+    static void _and(Instruction*);
+    static void _or(Instruction*);
+    static void _xor(Instruction*);
+    static void _test(Instruction*);
+    static void _shl(Instruction*);
+    static void _shr(Instruction*);
+    static void _push(Instruction*);
+    static void _pop(Instruction*);
+    static void _jmp(Instruction*);
+    static void _jeq(Instruction*);
+    static void _jne(Instruction*);
+    static void _jgt(Instruction*);
+    static void _call(Instruction*);
+    static void _ret(Instruction*);
+    static void _iret(Instruction*);
+    void resolveOneOperand();
+    void resolveTwoOperands();
+    void parseOp1();
+    void parseOp2();
+    void encode();
+    void test();
+    void encodeOp1();
+    void encodeOp2();
+    
+    
+    vector<uint8_t> byteVector;
+    InstrDescrType instrType;
+    OpDescrType op1Type;
+    OpDescrType op2Type;
+    ssize_t instrSz;
+    uint8_t instrDescr;
+    uint8_t op1Descr;
+    uint8_t op1B1;
+    uint8_t op1B2;
+    uint8_t op2Descr;
+    uint8_t op2B1;
+    uint8_t op2B2;
+    string inputLine;
+    bool opSz;
+    string op1;
+    string op2;
+    string op1Val;
+    string op2Val;
+    string op1Sym;
+    string op2Sym;
+    string op1Num;
+    string op2Num;
+    string op1HL;
+    string op2HL;
+    bool op1IsImmHex;
+    bool op2IsImmHex;
+    OpSynType op1SynType;
+    OpSynType op2SynType;
+    RelType op1RelType;
+    RelType op2RelType;
+    
+    static map<string, InstrDescrType> StrIDTMap;
+    static map<InstrDescrType, void (*)(Instruction*) > IDTLambdaMap;
+
+    
+    static regex splitOneOpr;
+    static regex splitTwoOpr;
+    static regex isImm;
+    static regex isImmDec;
+    static regex isImmSym;
+    static regex isRegDirNum;
+    static regex isRegDirAlph;
+    static regex isPcRelSym;
+    static regex isAbsSym;
+    static regex isAbsData;
+    static regex isRegNumOff;
+    static regex isRegAlphOff;
+    static regex isRegNumSym;
+    static regex isRegAlphSym;
+
+   
+    friend class Assembler;
+
+};
+
+#endif
+

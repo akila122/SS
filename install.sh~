@@ -1,0 +1,7 @@
+#!/bin/bash
+sudo cp bin/assembler /usr/bin
+echo Command assembler enabled
+sudo cp bin/emulator /usr/bin
+echo Command emulator enabled
+sudo cp bin/IVTSetup.s /usr/bin
+echo IVTSetup copied 

@@ -1,0 +1,319 @@
+//======================================================================
+//======================================================================
+//****             Course:  IR3SS                                   ****
+//****             File:    Expression.cpp                          ****
+//****             Info:    Expression class Source                 ****
+//****                                                              ****
+//****             Student: Aleksa Rajkovic 248|2016      	    ****
+//****             Date:    June 2019.                              ****
+//======================================================================
+//======================================================================
+
+#include "Expression.h"
+#include "Instruction.h"
+
+Expression::Expression(string expr) : done(false),val(0),promoteGlobal(false){
+    
+    regex expand ("(-(?!(0))[[:digit:]]+)|(-0x[[:xdigit:]]+)|(-_?[[:alpha:]][[:alnum:]]+)");
+    ex = regex_replace(expr,expand,"+($&)");
+    
+    
+    InfixToPostfix(ex);
+    test();
+    
+}
+
+
+int16_t Expression::forceEval(){
+    return val;
+}
+
+
+Expression::~Expression() {
+}
+
+
+bool Expression::isMemVal(){
+    
+    return this->symbolOperands.size()==1 && !canEval();
+    
+}
+
+string Expression::InfixToPostfix(string expression)
+{
+    stack<string> S;
+    
+    bool wasOpr = false;
+    bool wasLeft = false;
+    bool wasBegin = true;
+    
+    for(int i = 0;i< expression.length();i++) {
+        
+        if(expression=="")
+            throw "Assembler Error: Invalid expression, expression must not be empty";
+        
+        string ex="";
+        
+        ex += expression[i];
+        
+        if(ex==" " ) continue;
+        
+        while(i+1<expression.length() && IsOperand(ex+expression[i+1])){
+            ex+=expression[++i];
+        }
+        
+        
+        
+        if(IsOperator(ex)) 
+        {
+            if ((wasOpr || wasLeft || wasBegin ) && (ex=="-" || ex=="~" || ex=="+")) {
+                
+                if (ex == "-") ex = "$";      
+                if (ex == "+") ex = "#";
+              
+            }
+         
+            wasOpr = true;
+            wasLeft = false;
+            
+            while(!S.empty() && S.top() != "(" && HasHigherPrecedence(S.top(),ex))
+            {
+                postfix.push_back(S.top());
+                postfixStr += S.top();
+                S.pop();
+            }
+            
+            S.push(ex);
+        }
+
+        else if(IsOperand(ex))
+        {
+       
+            wasLeft = false;
+            wasOpr = false;
+            postfix.push_back(ex);
+            postfixStr += ex;
+            if(isNum(ex)) {
+                operands.insert({{ex,Instruction::_parseVal(ex)}});
+                
+            }
+            else{
+                symbolOperands.push_back(ex);
+                operands.insert({{ex,1}});
+                
+            }
+            
+        }
+
+        else if (ex == "(") 
+        {
+            wasLeft=true;
+            wasOpr = false;
+            S.push(ex);
+        }
+
+        else if(ex == ")") 
+        {
+            wasLeft = false;
+            wasOpr = false;
+            while(!S.empty() && S.top() !=  "(") {
+                postfix.push_back(S.top());
+                postfixStr += S.top();
+                S.pop();
+                if(S.empty()) throw "Assembler Error: Invalid expression "+expression;
+            }
+            S.pop();
+        }
+        else throw "Assembler Error: could not parse expression "+expression+" -> "+ex;
+        wasBegin = false;
+    }
+    
+
+    while(!S.empty()) {
+        postfix.push_back(S.top());
+        postfixStr += S.top();
+        if (S.top()=="(" || S.top()==")")
+            throw "Assembler Error: Invalid expression "+expression;
+        S.pop();
+    }
+
+    return "";
+}
+
+bool Expression::canEval(){
+    return symbolOperands.empty();
+}
+
+void Expression::addOperand(string s,int16_t val){
+  
+    for(auto i = symbolOperands.begin(); i != symbolOperands.end(); i++){
+        if (*i == s){
+            operands.find(s)->second = val;
+            symbolOperands.erase(i);
+            return;
+        }
+    }
+    throw "Assembler Error: Operand "+s+" not found." ;  
+}
+
+int16_t Expression::eval(){
+   
+    if (done) return val;
+    
+    if (!canEval()){
+        throw "Assembler Error: Operands in "+ex+" undefined";
+    }
+   
+    
+    vector<string> toTest = postfix;
+    stack<int16_t> vals;
+    
+    
+    for(int i=0; i<toTest.size();i++){  
+        
+        if (!IsOperator(toTest[i]))
+            vals.push(operands.at(toTest[i]));
+        else
+        {        
+      
+            int16_t val1 = vals.top();
+            vals.pop();
+            
+            if(toTest[i] == "$")
+              vals.push(-val1);
+            else if(toTest[i] == "~")
+              vals.push(~val1);
+            else if(toTest[i] == "#") vals.push(val1);
+            else{
+                
+                int16_t val2 = vals.top();
+                vals.pop();
+                
+                if(val1==0 && (toTest[i] == "/" || toTest[i]=="%"))
+                    throw "Assembler Error: Division by zero is not allowed -> "+ex;
+                
+                if(toTest[i] == "+") vals.push(val2+val1);
+                else if(toTest[i] == "-") vals.push(val2-val1); 
+                else if(toTest[i] == "*") vals.push(val2 * val1);  
+                else if(toTest[i] == "/") vals.push(val2/val1);
+                else if(toTest[i] == "^") vals.push(val2^val1);
+                else if(toTest[i] == "|") vals.push(val2|val1);
+                else if(toTest[i] == "&") vals.push(val2&val1);
+                else if(toTest[i] == "%") vals.push(val2%val1);
+               
+            }
+        }
+    }  
+
+    done = true;
+    return vals.top();
+    
+}
+
+bool Expression::isNum(string s){
+   
+    regex isNum("(-?((0x[[:xdigit:]]+)|([[:digit:]]+)))$");
+    
+    return regex_match(s,isNum);
+    
+    
+}
+
+bool Expression::IsOperand(string C) 
+{
+    regex e("^(_?[[:alnum:]]+)$");
+    return regex_match(C,e);
+}
+
+bool Expression::IsOperator(string C)
+{
+    if(C == "+" || C == "-" || C == "*" || C == "/" || C== "%" || C == "|" || C== "&" || C=="^" || C=="$" || C=="~" || C=="#")
+        return true;
+
+    return false;
+}
+ 
+int Expression::GetOperatorWeight(string op)
+{
+    int weight = -1; 
+    
+    
+    if(op=="+"|| op=="-")
+        weight = 4;
+    
+    if(op=="/"|| op=="%" || op=="*" || op=="|" || op=="^" || op=="&" )
+        weight = 5;
+    
+    if(op=="~" || op=="$" || op=="#")
+        weight = 6;
+
+    return weight;
+}
+
+
+int Expression::HasHigherPrecedence(string op1, string op2)
+{
+    int op1Weight = GetOperatorWeight(op1);
+    int op2Weight = GetOperatorWeight(op2);
+    
+    return op1Weight > op2Weight;
+
+        
+
+}
+void Expression::test(){
+    
+    vector<string> toTest = postfix;
+    stack<int16_t> vals;
+    
+    
+    for(int i=0; i<toTest.size();i++){  
+        
+
+        
+        
+        if (!IsOperator(toTest[i]))
+            vals.push(operands.at(toTest[i]));
+        else
+        {  
+        
+            
+      
+            if(!vals.size())
+                throw "Assembler Error: Invalid expression passed"+ex;
+            int16_t val1 = vals.top();
+      
+            vals.pop();
+            if(toTest[i] == "$")
+              vals.push(-val1);
+            else if(toTest[i] == "~")
+                vals.push(~val1);
+            else if(toTest[i] == "#") vals.push(val1);
+            else{
+                
+               
+                if(!vals.size())
+                throw "Assembler Error: Invalid expression passed"+ex;
+                int16_t val2 = vals.top();
+                vals.pop();
+
+                
+                if(val1==0) val1 = 2;
+                
+     
+                if(toTest[i] == "+") vals.push(val2+val1);
+                else if(toTest[i] == "-") vals.push(val2 - val1); 
+                else if(toTest[i] == "*") vals.push(val2 * val1);  
+                else if(toTest[i] == "/") vals.push(val2/val1);
+                else if(toTest[i] == "^") vals.push(val2^val1);
+                else if(toTest[i] == "|") vals.push(val2|val1);
+                else if(toTest[i] == "&") vals.push(val2&val1);
+                else if(toTest[i] == "%") vals.push(val2%val1);
+                  
+            }
+        }
+    }  
+
+    return;
+    
+}  

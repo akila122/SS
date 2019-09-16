@@ -1,0 +1,256 @@
+
+//======================================================================
+//======================================================================
+//****             Course:  IR3SS                                   ****
+//****             File:    ObjectFile.cpp                          ****
+//****             Info:    ObjectFile class Source                 ****
+//****                                                              ****
+//****             Student: Aleksa Rajkovic 248|2016      	    ****
+//****             Date:    June 2019.                              ****
+//======================================================================
+//======================================================================
+
+#include "ObjectFile.h"
+
+ObjectFile::ObjectFile(string inputFile) {
+    
+    string line;
+    ifstream in(inputFile);
+    
+    //symTable
+    getline(in,line);
+    smatch m;
+    regex_search(line,m,regex("^<<<<SYMBOL TABLE \\[([[:digit:]]+)\\]>>>>$"));
+    int n;
+    try{
+	n = stoi(m[1]);
+    }
+    catch(...){
+	throw "Linker Error: stoi failed at -> "+inputFile+" -> "+line;
+    }
+    getline(in,line);
+    getline(in,line);
+    for(int i=0;i<n;i++){
+        getline(in,line);
+        Symbol newSym(line);
+        symTable.insert({{newSym.name,newSym}});
+    }
+    getline(in,line);
+    getline(in,line);
+    getline(in,line);
+    
+    
+    //TNS
+    getline(in,line);
+    regex_search(line,m,regex("^<<<<TNS TABLE \\[([[:digit:]]+)\\]>>>>$"));
+    try{
+	n = stoi(m[1]);
+    }
+    catch(...){
+	throw "Linker Error: stoi failed at -> "+inputFile+" -> "+line;
+    }
+    getline(in,line);
+    getline(in,line);
+    for(int i=0;i<n;i++){
+        getline(in,line);
+        regex_search(line,m,regex ("^(.*)\\t\\t\\t(.*)\\t\\t\\t(.*)$"));
+        Expression e(m[3].str());
+        e.promoteGlobal = m[2]=="GLOBAL";
+        TNS.insert({{m[1].str(),e}});
+        
+        
+    }
+    
+    getline(in,line);
+    getline(in,line);
+    getline(in,line);
+    
+    
+    //RELOCATIONS
+    getline(in,line);
+    regex_search(line,m,regex("^<<<<RELOCATION TABLE \\[([[:digit:]]+)\\]>>>>$"));
+    try{
+	n = stoi(m[1]);
+    }
+    catch(...){
+	throw "Linker Error: stoi failed at -> "+inputFile+" -> "+line;
+    }
+    getline(in,line);
+    getline(in,line);
+    for(int i=0;i<n;i++){
+        getline(in,line);
+        exprRelocations.push_back(ExprRelocation(line));
+    }
+    
+    getline(in,line);
+    getline(in,line);
+    getline(in,line);
+    
+    
+    //SECTIONS
+    
+    getline(in,line);
+    regex_search(line,m,regex("^<<<<SECTIONS \\[([[:digit:]]+)\\]>>>>$"));
+    try{
+	n = stoi(m[1]);
+    }
+    catch(...){
+	throw "Linker Error: stoi failed at -> "+inputFile+" -> "+line;
+    }
+    getline(in,line);
+ 
+    for(int i=0;i<n;i++){
+        
+        getline(in,line);
+        regex_search(line,m,regex("^<<<<SECTION - (.*)>>>>$"));
+        string sName = m[1];
+        getline(in,line);
+        regex_search(line,m,regex("^\\[Size = ([[:digit:]]+)bytes \\| Flags = ([rwx]+) \\| MaxAlign = ([[:digit:]]+)\\]$"));
+        
+        int sz;
+        try{
+	sz = stoi(m[1]);
+    	}
+        catch(...){
+	throw "Linker Error: stoi failed at -> "+inputFile+" -> "+line;
+        }
+        string f = m[2];
+        int align;
+	try{
+	align = stoi(m[3]);
+    	}
+        catch(...){
+	throw "Linker Error: stoi failed at -> "+inputFile+" -> "+line;
+        }
+        uint8_t flags = 0;
+        if(f.find('r') != string::npos) flags+=4;
+        if(f.find('w') != string::npos) flags+=2;
+        if(f.find('x') != string::npos) flags+=1;
+        Section* newSection = new Section(sName,flags);
+        newSection->maxAlign = align;
+    
+        
+        
+        while(true){
+            
+            getline(in,line);
+            if(line=="") continue;
+            if(line=="#END#") break;
+            
+            size_t pos = 0;
+            string s = line;
+            string token;
+            string delimiter = " ";
+            while ((pos = s.find(delimiter)) != string::npos) {
+                token = s.substr(0, pos);
+                newSection->data.push_back(stoi(token,nullptr,16));
+                s.erase(0, pos + delimiter.length());
+            }
+            if(regex_match(s,regex("^[[:xdigit:]]+$")))
+                newSection->data.push_back(stoi(token,nullptr,16));
+        }
+        
+        sections.insert({{sName,newSection}});
+        getline(in,line);
+    
+        
+    }
+   
+    
+    
+}
+
+
+void ObjectFile::writeText(){
+    
+    //CHANGE THIS
+    
+    
+    cout<<"<<<<SYMBOL TABLE ["<<symTable.size()<<"]>>>>"<<endl<<endl;
+    
+    cout<<"SECTION\t\t"<<"NAME\t\t"<<"DEFINED\t\t"<<"SCOPE\t\t"<<"VALUE\t\t"<<"SIZE\t\t"<<"ALIGN\t\t"<<endl;
+    for(auto& sym : symTable){
+        cout<<sym.second.section<<"\t\t"<<sym.second.name<<"\t\t"<<sym.second.defined<<"\t\t";
+        if(sym.second.scope) cout<<"GLOBAL";
+        else cout<<"LOCAL";
+        cout<<"\t\t"<<sym.second.val<<"\t\t"<<sym.second.size<<"\t\t"<<(int)sym.second.align<<endl;    
+    }
+    cout<<endl<<"#END#";
+    
+    /*cout<<endl<<endl<<"<<<<TNS TABLE ["<<TNS.size()<<"]>>>>"<<endl<<endl;
+    
+    cout<<"SYMBOL\t\t\t"<<"SCOPE\t\t\t"<<"EXPRESSION\t\t\t"<<endl;
+    for(auto& sym : TNS){
+        cout<<sym.first<<"\t\t\t";
+        if(sym.second.promoteGlobal) cout<<"GLOBAL\t\t\t";
+        else cout<<"LOCAL\t\t\t";
+        cout<<sym.second.ex<<endl;
+    }
+    cout<<endl<<"#END#";
+    cout<<endl<<endl<<"<<<<RELOCATION TABLE ["<<exprRelocations.size()<<"]>>>>"<<endl<<endl;
+  
+    cout<<"SECTION\t\t\t"<<"OFFSET\t\t\t"<<"LENGTH\t\t\t"<<"SIZE\t\t\t"<<"TYPE\t\t\t"<<"EXPRESSION\t\t\t"<<endl;
+    
+    
+    for(auto& x : exprRelocations){
+        cout<<x.section<<"\t\t\t"<<x.offset<<"\t\t\t"<<x.exprs.size()<<"\t\t\t";
+        if(x.sz) cout<<"WORD";
+        else cout<<"BYTE";
+        cout<<"\t\t\t";
+                
+        if(x.relType == REL_ABS) cout<<"REL_ABS";
+        else cout <<"REL_PC";
+        cout<<"\t\t\t";
+        string s = "";
+        for(int i=0; i<x.exprs.size();i++){
+            s+=x.exprs[i].ex;
+            if(i!=x.exprs.size()-1) s+=",";
+        }
+        cout<<s<<endl;
+    }
+    cout<<endl<<"#END#";
+    */
+    cout<<endl<<endl<<"<<<<SECTIONS ["<<sections.size()-(sections.find(".bss")!=sections.end())<<"]>>>>";
+    
+    for(auto&x : sections){
+        
+        if(x.first==".bss") continue;
+        
+        cout<<endl<<endl<<"<<<<SECTION - "<<x.first<<">>>>"<<endl;x.second;
+        cout<<"[Size = "<<x.second->data.size()<<"bytes | Flags = ";
+        string f = "";
+        if (x.second->flags%8) f+="r";
+        if (x.second->flags%4) f+="w";
+        if (x.second->flags%2) f+="x";
+        cout<<f<<" | MaxAlign = "<<(int)x.second->maxAlign<<"]"<<endl<<endl;
+        
+        int i=0;
+        
+        ios_base::fmtflags _f(cout.flags());
+        
+        for(auto& b : x.second->data){
+            if(b>=0 && b<=15) cout<<0;
+            cout<<hex<<uppercase<<(int)b<<" ";
+            if(++i%8 == 0) cout<<endl;
+        }
+        
+        cout.flags(_f);
+        
+        cout<<endl<<endl<<"#END#";
+        
+        
+        
+    }
+    
+        
+    
+  
+    
+    
+}
+
+
+ObjectFile::~ObjectFile() {
+    
+}
+

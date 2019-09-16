@@ -1,0 +1,67 @@
+
+//======================================================================
+//======================================================================
+//****             Course:  IR3SS                                   ****
+//****             File:    Expression.h                            ****
+//****             Info:    Expression class Header                 ****
+//****                                                              ****
+//****             Student: Aleksa Rajkovic 248|2016      	    ****
+//****             Date:    June 2019.                              ****
+//======================================================================
+//======================================================================
+
+#ifndef EXPRESSION_H
+#define EXPRESSION_H
+
+#include <string>
+#include <regex>
+#include <stack>
+#include <vector>
+#include <map>
+#include <stdint.h>
+#include <iostream>
+
+
+using namespace std;
+
+class Expression {
+public:
+
+    Expression(string);
+    virtual ~Expression();
+
+
+private:
+    
+    string InfixToPostfix(string expression);
+    int16_t forceEval();
+    void test();
+    bool canEval();
+    bool isMemVal();
+    void addOperand(string, int16_t);
+    int16_t eval();
+    static int HasHigherPrecedence(string operator1, string operator2);
+    static bool IsOperator(string C);
+    static bool IsOperand(string C);
+    static int GetOperatorWeight(string opt);
+    static bool IsDoubleOperator(char c1, char c2);
+    static bool isNum(string);
+
+    bool promoteGlobal;
+    string ex;
+    int16_t val;
+    bool done;
+    vector<string> postfix;
+    vector<string> symbolOperands;
+    string postfixStr;
+    map<string, int16_t> operands;
+    
+    friend class Directive;
+    friend class ObjectFile;
+    friend class Assembler;
+    friend class Linker;
+    
+};
+
+#endif /* EXPRESSION_H */
+

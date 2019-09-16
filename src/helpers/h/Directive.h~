@@ -1,0 +1,65 @@
+
+#ifndef DIRECTIVE_H
+#define DIRECTIVE_H
+
+
+#include <stdint.h>
+#include <regex>
+#include <string>
+#include <map>
+#include <iostream>
+#include <exception>
+#include <climits>
+#include <vector>
+#include "Utils.h"
+#include "Instruction.h"
+#include "Expression.h"
+#include "Section.h"
+
+using namespace std;
+
+
+class Directive {
+public:
+    Directive(string,Section* s);
+    virtual ~Directive();
+private:
+    
+    
+    vector<Expression> exprs;
+    string inputLine;
+    DirectiveType dirType;
+    
+    vector<string> symbolVector;
+    vector<uint8_t> byteVector;
+    bool alertAssembler;
+    
+    Section* sec;
+
+
+    void exprToByte(bool);
+    
+    static void _global(Directive*);
+    static void _extern(Directive*);
+    static void _equ(Directive*);
+    static void _text(Directive*);
+    static void _data(Directive*);
+    static void _bss(Directive*);
+    static void _custom(Directive*);
+    static void _byte(Directive*);
+    static void _word(Directive*);
+    static void _align(Directive*);
+    static void _skip(Directive*);
+
+    static void initMaps();
+    static map<string,DirectiveType> strDTMap;
+    static map<DirectiveType,void (*)(Directive*)> DTLambdaMap;
+    
+    static vector<string> split(string,string,string);
+    
+    friend int main(int argc, char** argv);
+    friend class Assembler;
+};
+
+#endif
+

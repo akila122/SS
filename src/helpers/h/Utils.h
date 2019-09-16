@@ -1,0 +1,58 @@
+//======================================================================
+//======================================================================
+//****             Course:  IR3SS                                   ****
+//****             File:    Utils.h                                 ****
+//****             Info:    Utils Header                            ****
+//****                                                              ****
+//****             Student: Aleksa Rajkovic 248|2016      	    ****
+//****             Date:    June 2019.                              ****
+//======================================================================
+//======================================================================
+
+#ifndef UTILS_H
+#define UTILS_H
+
+enum InstrDescrType {
+    NOP,HALT, XCHG, INT, MOV,
+    ADD, SUB, MUL, DIV,
+    CMP, NOT, AND, OR, XOR,
+    TEST, SHL, SHR, PUSH, POP, JMP, JEQ, JNE, JGT,
+    CALL, RET, IRET
+};
+
+enum OpDescrType {
+    IMM, REGDIR,
+    REGIND, REGIND_OFF8, REGIND_OFF16,
+    MEM
+};
+
+enum DirectiveType {
+    GLOBAL, EXTERN, EQU,
+    TEXT, DATA, BSS, CUSTOM,
+    BYTE, WORD, ALIGN, SKIP
+};
+
+enum OpSynType {
+    IMM_VAL,IMM_SYM,REG_DIR,REG_VAL,REG_SYM,
+    SYM_PC,SYM_ABS,ABS_DATA
+};
+
+enum RelType {
+   NO_REL,ALERT_AS,REL_ABS,REL_PC
+};
+
+const uint16_t IVT_START_ADR = 0x0000;
+const size_t IVT_SZ = 16;
+
+const uint16_t STACK_START_ADR = 0x0010;
+const size_t STACK_SZ = 8192;
+
+const uint16_t CODE_START_ADR = 0x2010;
+const size_t CODE_SZ = 57072;
+
+const uint16_t MMREG_START_ADR = 0xFF00;
+const size_t MMREG_SZ = 256;
+
+
+#endif /* UTILS_H */
+

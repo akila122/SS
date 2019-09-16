@@ -1,0 +1,3 @@
+#!/bin/bash
+make
+source bin/install.sh
