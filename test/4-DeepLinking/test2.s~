@@ -1,0 +1,14 @@
+.global f,link2
+.extern k
+
+.equ f,g
+.equ g,h
+.equ h,i
+.equ j,k
+
+.data
+link2:
+.skip 10
+
+
+

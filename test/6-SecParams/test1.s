@@ -1,0 +1,73 @@
+.global _start
+
+.text
+
+_start:
+
+cmp &_start,0xA000
+
+jne skip0
+
+mov *0xFF00, 116 
+mov *0xFF00, 101
+mov *0xFF00, 120
+mov *0xFF00, 116
+mov *0xFF00, 32
+mov *0xFF00, 48
+mov *0xFF00, 120
+mov *0xFF00, 65
+mov *0xFF00, 48
+mov *0xFF00, 48
+mov *0xFF00, 48
+mov *0xFF00, 10 
+
+skip0:
+
+cmp &d,0xB000
+jne skip1
+
+mov *0xFF00, 100 
+mov *0xFF00, 97
+mov *0xFF00, 116
+mov *0xFF00, 97
+mov *0xFF00, 32
+mov *0xFF00, 48
+mov *0xFF00, 120
+mov *0xFF00, 66
+mov *0xFF00, 48
+mov *0xFF00, 48
+mov *0xFF00, 48
+mov *0xFF00, 10
+
+skip1:
+
+cmp &a,0xC000
+
+jne end
+
+mov *0xFF00, 65
+mov *0xFF00, 32
+mov *0xFF00, 48
+mov *0xFF00, 120
+mov *0xFF00, 67
+mov *0xFF00, 48
+mov *0xFF00, 48
+mov *0xFF00, 48
+mov *0xFF00, 10
+
+
+
+end:
+
+halt
+.section A, rw
+a:
+.skip 20
+
+.section B,rw
+.skip 30
+
+.data
+d:
+.byte 0xFF,0xFF,0xFF
+

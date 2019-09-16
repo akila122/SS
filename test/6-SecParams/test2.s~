@@ -1,0 +1,21 @@
+
+
+.text
+
+proc:
+
+push r0
+push r1
+ret
+
+.section A, rw
+.align 2
+.skip 20
+
+.section B,rw
+.align 3
+.skip 30
+
+.data
+.byte 0xFF,0xFF,0xFF
+

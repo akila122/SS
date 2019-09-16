@@ -1,0 +1,24 @@
+<<<<SYMBOL TABLE [1]>>>>
+
+SECTION			NAME			DEFINED			SCOPE			VALUE			SIZE			ALIGN			
+UND			link1			0			GLOBAL			0			0			0
+
+#END#
+
+<<<<TNS TABLE [4]>>>>
+
+SYMBOL			SCOPE			EXPRESSION			
+k			GLOBAL			l
+l			LOCAL			m
+m			LOCAL			n
+n			LOCAL			link1
+
+#END#
+
+<<<<RELOCATION TABLE [0]>>>>
+
+SECTION			OFFSET			LENGTH			SIZE			TYPE			EXPRESSION			
+
+#END#
+
+<<<<SECTIONS [0]>>>>

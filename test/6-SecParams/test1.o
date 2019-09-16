@@ -1,0 +1,101 @@
+<<<<SYMBOL TABLE [10]>>>>
+
+SECTION			NAME			DEFINED			SCOPE			VALUE			SIZE			ALIGN			
+.A			.A			1			LOCAL			0			20			0
+.B			.B			1			LOCAL			0			30			0
+.data			.data			1			LOCAL			0			3			0
+.text			.text			1			LOCAL			0			265			0
+.text			_start			1			GLOBAL			0			0			0
+.A			a			1			LOCAL			0			0			0
+.data			d			1			LOCAL			0			0			0
+.text			end			1			LOCAL			264			0			0
+.text			skip0			1			LOCAL			95			0			0
+.text			skip1			1			LOCAL			190			0			0
+
+#END#
+
+<<<<TNS TABLE [0]>>>>
+
+SYMBOL			SCOPE			EXPRESSION			
+
+#END#
+
+<<<<RELOCATION TABLE [6]>>>>
+
+SECTION			OFFSET			LENGTH			SIZE			TYPE			EXPRESSION			
+.text			2			1			WORD			REL_ABS			_start
+.text			9			1			WORD			REL_ABS			skip0
+.text			97			1			WORD			REL_ABS			d
+.text			104			1			WORD			REL_ABS			skip1
+.text			192			1			WORD			REL_ABS			a
+.text			199			1			WORD			REL_ABS			end
+
+#END#
+
+<<<<SECTIONS [4]>>>>
+
+<<<<SECTION - .A>>>>
+[Size = 20bytes | Flags = rw | MaxAlign = 0]
+
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 
+00 00 00 00 
+
+#END#
+
+<<<<SECTION - .B>>>>
+[Size = 30bytes | Flags = rw | MaxAlign = 0]
+
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 
+
+#END#
+
+<<<<SECTION - .data>>>>
+[Size = 3bytes | Flags = rw | MaxAlign = 0]
+
+FF FF FF 
+
+#END#
+
+<<<<SECTION - .text>>>>
+[Size = 265bytes | Flags = x | MaxAlign = 0]
+
+4C 00 00 00 00 00 A0 AC 
+A0 00 00 24 A0 00 FF 00 
+74 00 24 A0 00 FF 00 65 
+00 24 A0 00 FF 00 78 00 
+24 A0 00 FF 00 74 00 24 
+A0 00 FF 00 20 00 24 A0 
+00 FF 00 30 00 24 A0 00 
+FF 00 78 00 24 A0 00 FF 
+00 41 00 24 A0 00 FF 00 
+30 00 24 A0 00 FF 00 30 
+00 24 A0 00 FF 00 30 00 
+24 A0 00 FF 00 0A 00 4C 
+00 00 00 00 00 B0 AC A0 
+00 00 24 A0 00 FF 00 64 
+00 24 A0 00 FF 00 61 00 
+24 A0 00 FF 00 74 00 24 
+A0 00 FF 00 61 00 24 A0 
+00 FF 00 20 00 24 A0 00 
+FF 00 30 00 24 A0 00 FF 
+00 78 00 24 A0 00 FF 00 
+42 00 24 A0 00 FF 00 30 
+00 24 A0 00 FF 00 30 00 
+24 A0 00 FF 00 30 00 24 
+A0 00 FF 00 0A 00 4C 00 
+00 00 00 00 C0 AC A0 00 
+00 24 A0 00 FF 00 41 00 
+24 A0 00 FF 00 20 00 24 
+A0 00 FF 00 30 00 24 A0 
+00 FF 00 78 00 24 A0 00 
+FF 00 43 00 24 A0 00 FF 
+00 30 00 24 A0 00 FF 00 
+30 00 24 A0 00 FF 00 30 
+00 24 A0 00 FF 00 0A 00 
+0C 
+
+#END#

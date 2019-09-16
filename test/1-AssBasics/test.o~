@@ -1,0 +1,83 @@
+<<<<SYMBOL TABLE [15]>>>>
+
+SECTION			NAME			DEFINED			SCOPE			VALUE			SIZE			ALIGN			
+.A			.A			1			LOCAL			0			4			0
+.B			.B			1			LOCAL			0			16			4
+.bss			.bss			1			LOCAL			0			16			0
+.data			.data			1			LOCAL			0			49			3
+.text			.text			1			LOCAL			0			39			0
+.text			_start			1			LOCAL			0			0			0
+.data			data1			1			LOCAL			0			0			0
+.data			data2			1			LOCAL			16			0			0
+.data			data3			1			LOCAL			44			0			0
+UND			extr0			0			GLOBAL			0			0			0
+UND			extr1			0			GLOBAL			0			0			0
+UND			extr2			0			GLOBAL			0			0			0
+ABS			mask			1			LOCAL			61695			2			0
+.bss			tst1			1			LOCAL			0			0			0
+.bss			tst2			1			LOCAL			8			0			0
+
+#END#
+
+<<<<TNS TABLE [1]>>>>
+
+SYMBOL			SCOPE			EXPRESSION			
+TnsE			LOCAL			extr0+(-extr2)
+
+#END#
+
+<<<<RELOCATION TABLE [8]>>>>
+
+SECTION			OFFSET			LENGTH			SIZE			TYPE			EXPRESSION			
+.data			16			1			WORD			REL_ABS			data1
+.data			18			1			WORD			REL_ABS			data2+(-data1)
+.data			20			1			WORD			REL_ABS			extr1+data2
+.data			22			1			WORD			REL_ABS			extr0*(data2&mask)
+.text			7			1			WORD			REL_ABS			data2
+.text			21			1			WORD			REL_ABS			data1
+.text			24			1			WORD			REL_ABS			data2
+.text			33			1			WORD			REL_PC			data1
+
+#END#
+
+<<<<SECTIONS [4]>>>>
+
+<<<<SECTION - .A>>>>
+[Size = 4bytes | Flags = rwx | MaxAlign = 0]
+
+24 20 22 0C 
+
+#END#
+
+<<<<SECTION - .B>>>>
+[Size = 16bytes | Flags = rw | MaxAlign = 4]
+
+EC 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 
+
+
+#END#
+
+<<<<SECTION - .data>>>>
+[Size = 49bytes | Flags = rw | MaxAlign = 3]
+
+FF FF 34 F4 AE DD FF AA 
+01 0A FF FF FF FF FF FF 
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 
+00 
+
+#END#
+
+<<<<SECTION - .text>>>>
+[Size = 39bytes | Flags = rwx | MaxAlign = 0]
+
+24 20 00 01 00 2C 80 00 
+00 6C 14 20 23 A0 0F 85 
+68 20 23 24 A0 00 00 A0 
+00 00 24 24 00 FF F0 5C 
+8E DC FF 22 50 2A 0C 
+
+#END#
